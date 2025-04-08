@@ -1,0 +1,35 @@
+# Build repository
+bin/
+obj/
+out/
+
+# IDE
+.vscode/
+.vs/
+.idea/
+
+# Visual Studio
+*.user
+*.suo
+*.userprefs
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+
+# Exits 
+publish/
+TestResults/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+
+# Local development settings
+appsettings.Development.json
