@@ -44,6 +44,14 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
+// Rating repository et service
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IRatingService, RatingService>();
+
+// SessionSpeaker repository et service
+builder.Services.AddScoped<ISessionSpeakerRepository, SessionSpeakerRepository>();
+builder.Services.AddScoped<ISessionSpeakerService, SessionSpeakerService>();
+
 // Enregistrement d'AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
