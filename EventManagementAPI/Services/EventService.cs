@@ -1,9 +1,10 @@
 using AutoMapper;
 using EventManagementAPI.Data.Models;
 using EventManagementAPI.DTOs;
-using EventManagementAPI.Repositories;
+using EventManagementAPI.DTOs.QueryParameters;
 using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Services
 {
@@ -45,7 +46,6 @@ namespace EventManagementAPI.Services
             {
                 return false;
             }
-            // Appliquer le mapping pour mettre à jour l’entité
             _mapper.Map(updateDto, ev);
             _repository.Update(ev);
             await _repository.SaveChangesAsync();
@@ -62,6 +62,45 @@ namespace EventManagementAPI.Services
             _repository.Remove(ev);
             await _repository.SaveChangesAsync();
             return true;
+        }
+
+        // Ajout de la méthode de filtrage et pagination
+        public async Task<PagedResult<EventDTO>> GetFilteredEventsAsync(EventFilterParameters filterParams)
+        {
+            // On part de la queryable pour appliquer les filtres
+            var query = _repository.GetQueryable();
+
+            if (filterParams.StartDate.HasValue)
+                query = query.Where(e => e.StartDate >= filterParams.StartDate.Value);
+
+            if (filterParams.EndDate.HasValue)
+                query = query.Where(e => e.EndDate <= filterParams.EndDate.Value);
+
+            if (!string.IsNullOrEmpty(filterParams.Location))
+                query = query.Where(e => e.Location.Name.Contains(filterParams.Location));
+
+            if (!string.IsNullOrEmpty(filterParams.Category))
+                query = query.Where(e => e.Category.Contains(filterParams.Category));
+
+            if (!string.IsNullOrEmpty(filterParams.Status))
+                query = query.Where(e => e.Status.Contains(filterParams.Status));
+
+            int totalItems = await query.CountAsync();
+
+            var eventsList = await query
+                .Skip((filterParams.Page - 1) * filterParams.PageSize)
+                .Take(filterParams.PageSize)
+                .ToListAsync();
+
+            var result = new PagedResult<EventDTO>
+            {
+                Page = filterParams.Page,
+                PageSize = filterParams.PageSize,
+                TotalItems = totalItems,
+                Items = _mapper.Map<IEnumerable<EventDTO>>(eventsList)
+            };
+
+            return result;
         }
     }
 }

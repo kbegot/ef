@@ -10,5 +10,6 @@ namespace EventManagementAPI.Repositories.Interfaces
         void Update(Event ev);
         void Remove(Event ev);
         Task SaveChangesAsync();
+        IQueryable<Event> GetQueryable();
     }
 }

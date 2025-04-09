@@ -15,7 +15,6 @@ namespace EventManagementAPI.Repositories
 
         public async Task<IEnumerable<Event>> GetAllAsync()
         {
-            // Inclut la relation avec le Location si nécessaire
             return await _context.Events.Include(e => e.Location).ToListAsync();
         }
 
@@ -43,6 +42,11 @@ namespace EventManagementAPI.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public IQueryable<Event> GetQueryable()
+        {
+            return _context.Events.Include(e => e.Location).AsQueryable();
         }
     }
 }

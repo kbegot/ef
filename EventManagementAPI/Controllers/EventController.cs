@@ -1,5 +1,5 @@
 using EventManagementAPI.DTOs;
-using EventManagementAPI.Services;
+using EventManagementAPI.DTOs.QueryParameters;
 using EventManagementAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,9 +30,7 @@ namespace EventManagementAPI.Controllers
         {
             var ev = await _service.GetEventByIdAsync(id);
             if (ev == null)
-            {
                 return NotFound();
-            }
             return Ok(ev);
         }
 
@@ -40,19 +38,17 @@ namespace EventManagementAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDTO createEventDto)
         {
-            var createdEvent = await _service.CreateEventAsync(createEventDto);
-            return CreatedAtAction(nameof(GetById), new { id = createdEvent.Id }, createdEvent);
+            var created = await _service.CreateEventAsync(createEventDto);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         // PUT : api/Event/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CreateEventDTO updateEventDto)
+        public async Task<IActionResult> Update(int id, [FromBody] CreateEventDTO updateDto)
         {
-            var result = await _service.UpdateEventAsync(id, updateEventDto);
-            if (!result)
-            {
+            var success = await _service.UpdateEventAsync(id, updateDto);
+            if (!success)
                 return NotFound();
-            }
             return NoContent();
         }
 
@@ -60,12 +56,18 @@ namespace EventManagementAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _service.DeleteEventAsync(id);
-            if (!result)
-            {
+            var success = await _service.DeleteEventAsync(id);
+            if (!success)
                 return NotFound();
-            }
             return NoContent();
+        }
+
+        // GET : api/Event/filter
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFiltered([FromQuery] EventFilterParameters filterParams)
+        {
+            var result = await _service.GetFilteredEventsAsync(filterParams);
+            return Ok(result);
         }
     }
 }
