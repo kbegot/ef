@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.IO;
 using EventManagementAPI.Data;
 using EventManagementAPI.Mapping;
 using EventManagementAPI.Middlewares;
@@ -73,11 +75,32 @@ builder.Services.AddScoped<ISessionSpeakerService, SessionSpeakerService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // ===============================================
-// Ajout des services pour l'API et Swagger
+// Configuration Swagger (commentary XML)
+// ===============================================
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Version = "v1",
+        Title = "API de Gestion d'Événements",
+        Description = "Une API REST complète pour la gestion des événements, participants, sessions, intervenants, lieux, salles, inscriptions, notations et associations entre sessions et intervenants.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {}
+    });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+});
+
+// ===============================================
+// Ajout des services pour l'API
 // ===============================================
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -96,9 +119,14 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gestion d'Événements v1");
+        options.RoutePrefix = string.Empty; // Swagger root URL
+    });
 }
 
+// Middleware de gestion des exceptions
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
