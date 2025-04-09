@@ -15,18 +15,33 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
 
-// Enregistrement des repositories et services pour Event, Participant, Session et Speaker
+// Event repository et service
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 
+// Participant repository et service
 builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 
+// Session repository et service
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 
+// Speaker repository et service
 builder.Services.AddScoped<ISpeakerRepository, SpeakerRepository>();
 builder.Services.AddScoped<ISpeakerService, SpeakerService>();
+
+// Location repository et service
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+
+// Room repository et service
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+
+// EventParticipant repository et service
+builder.Services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 // Enregistrement d'AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
