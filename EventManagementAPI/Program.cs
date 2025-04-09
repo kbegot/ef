@@ -19,10 +19,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
 
-// Configuration des validations FluentValidation
+// Event validators
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEventDTOValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
+// Location validators
+builder.Services.AddValidatorsFromAssemblyContaining<CreateLocationDTOValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+
+// Participant validators
+builder.Services.AddValidatorsFromAssemblyContaining<CreateParticipantDTOValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 // Event repository et service
 builder.Services.AddScoped<IEventRepository, EventRepository>();
