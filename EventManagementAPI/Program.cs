@@ -1,4 +1,5 @@
 using EventManagementAPI.Data;
+using EventManagementAPI.Middlewares;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services;
@@ -57,6 +58,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Execption Middleware (error management)
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
