@@ -5,6 +5,9 @@ using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services;
 using EventManagementAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using EventManagementAPI.Validators;
 using EventManagementAPI.Mapping;
 
 
@@ -15,6 +18,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
+
+// Configuration des validations FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEventDTOValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+
 
 // Event repository et service
 builder.Services.AddScoped<IEventRepository, EventRepository>();
