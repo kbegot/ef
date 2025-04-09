@@ -17,7 +17,7 @@ namespace EventManagementAPI.Services
         {
             // Vérifier si le participant est déjà inscrit
             var existing = await _repository.GetRegistrationAsync(dto.EventId, dto.ParticipantId);
-            if (existing != null) return false; // ou retourner true selon la logique désirée
+            if (existing != null) return false;
 
             var registration = new EventParticipant
             {

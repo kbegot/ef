@@ -9,7 +9,7 @@ namespace EventManagementAPI.Controllers
         [HttpGet("throw")]
         public IActionResult ThrowError()
         {
-            // Pour tester le middleware d'exception 
+            // For testing, throw an exception to see if the middleware catches it
             throw new Exception("Erreur de test pour vérifier le middleware.");
         }
     }

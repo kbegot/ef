@@ -102,7 +102,7 @@ namespace EventManagementAPI.Data
                 .WithMany(p => p.Ratings)
                 .HasForeignKey(r => r.ParticipantId);
 
-            // Unicité : Un participant ne peut noter qu'une fois une session
+            // Unique constraint on Rating
             modelBuilder.Entity<Rating>()
                 .HasIndex(r => new { r.SessionId, r.ParticipantId })
                 .IsUnique();
